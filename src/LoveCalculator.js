@@ -4,17 +4,16 @@ import axios from 'axios';
 
 const LoveCalculator = () => {
     const { marginTop } = useStyle();
-    const [yourName, setYourName] = useState(undefined);
-    const [yourPartnerName, setYourPartnerName] = useState(undefined);
+    const [name, setName] = useState({
+        yourName: '',
+        yourPartnerName: ''
+    });
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = ({ target }) => {
-        if (target.name === 'yourName') {
-            setYourName(target.value);
-        } else {
-            setYourPartnerName(target.value);
-        }
+        const { name, value } = target;
+        setName(oldState => ({ ...oldState, [name]: value }));
     };
 
     const options = {
@@ -22,9 +21,10 @@ const LoveCalculator = () => {
             'x-rapidapi-key': '6da530e0e0msh3222c5642047dafp17285cjsn05d7d0cec8a6',
             'x-rapidapi-host': 'love-calculator.p.rapidapi.com'
         }
-    }
+    };
 
     const handleSubmit = () => {
+        const { yourName, yourPartnerName } = name;
         setIsLoading(true);
         axios.get(`https://love-calculator.p.rapidapi.com/getPercentage?fname=${yourName}&sname=${yourPartnerName}`, options)
             .then(res => setData(res.data))
@@ -41,7 +41,7 @@ const LoveCalculator = () => {
                     <TextField name='yourName' label="Enter Your Name" variant='outlined' size='small' onChange={handleChange} />
                 </Grid>
                 <Grid item>
-                    <TextField name='partnerName' label="Enter Your Love Name" variant='outlined' size='small' onChange={handleChange} />
+                    <TextField name='yourPartnerName' label="Enter Your Love Name" variant='outlined' size='small' onChange={handleChange} />
                 </Grid>
                 <Grid item>
                     <Button name='percentage' color='primary' disabled={isLoading} variant='contained' onClick={handleSubmit} >
